@@ -4,12 +4,15 @@ import json
 import datetime
 from functools import partial
 from dotenv import load_dotenv
+from flask import Flask, request
 
 load_dotenv()
 
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('API_KEY',threaded=False)
 
 bot = TeleBot(API_KEY)
+bot.remove_webhook()
+bot.set_webhook(url='https://wood4104.pythonanywhere.com/')
 
 
 def load_data(func):
@@ -132,4 +135,10 @@ def prev_user(message, data):
         bot.send_message(message.chat.id, "Idk")
 
 
-bot.polling()
+
+app = Flask(__name__)
+@app.route('/',methods=['POST'])
+def webhook():
+    update = types.Update.de_json(request.stream.read().decode('utf-8'))
+    bot.process_new_updates([update])
+    return 'ok',200
