@@ -8,9 +8,9 @@ from flask import Flask, request
 
 load_dotenv()
 
-API_KEY = os.getenv('API_KEY',threaded=False)
+API_KEY = os.getenv('API_KEY')
 
-bot = TeleBot(API_KEY)
+bot = TeleBot(API_KEY,threaded=False)
 bot.remove_webhook()
 bot.set_webhook(url='https://wood4104.pythonanywhere.com/')
 
